@@ -104,6 +104,13 @@ This module is published under Apache 2.0 license, but depending on `use_highcar
 
 ## Release History
 
+### v0.1.1
+
+**Date:** Jun 12. 2016
+
+**Release Info:**
+* Few typos corrected.
+
 ### v0.1.0
 
 **Date:** Jun 12. 2016

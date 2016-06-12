@@ -91,6 +91,13 @@ define kairosdb::instance(
 
     'absent': {
 
+      exec { "service kairosdb-${name} stop":
+        path   => ['/sbin', '/bin', '/usr/sbin', '/usr/bin',
+                    '/usr/local/sbin', '/usr/local/bin'],
+        onlyif => "service kairosdb-${name} status",
+        before => File["kairosdb-${name} directory"],
+      }
+      ->
       exec { "service kairosdb-${name} install":
         command => "update-rc.d -f kairosdb-${name} remove",
         path    => ['/sbin', '/bin', '/usr/sbin', '/usr/bin',

@@ -99,7 +99,6 @@ class kairosdb (
   ){
 
   # Validate input
-  validate_re($version, '^(\d+\.\d+\.\d+)(?:-\d+)?$')
   validate_bool($manage_package)
   validate_bool($patch_initd)
   validate_bool($use_highcharts)
@@ -108,6 +107,8 @@ class kairosdb (
     
     include '::staging'
 
+    validate_re($version, '^(\d+\.\d+\.\d+)(?:-\d+)?$')
+    
     $release = regsubst($version, '^([^-]+).*$', '\1')
 
     case $::osfamily {

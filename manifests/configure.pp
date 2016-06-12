@@ -52,7 +52,7 @@ define kairosdb::configure ($datastore,
   kairosdb::property { "${name}.kairosdb.query_cache.cache_dir":
     base_path => "${::kairosdb::conf_base}/${name}",
     key       => 'kairosdb.query_cache.cache_dir',
-    value     => "${::kairosdb::tmpdir}/cairos_cache_${name}",
+    value     => "${::kairosdb::tmpdir}/kairos_cache_${name}",
     before    => Exec["kairosdb-${name} configuration changed"],
     notify    => Exec["kairosdb-${name} configuration changed"],
   }
