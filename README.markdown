@@ -24,7 +24,7 @@ Minimum configuration example is based on assumption that we'll use Cassandra cl
 ```
 kairosdb::instance { 'kdb01': 
   properties_set => {
-    'kairosdb.datastore.cassandra.host_list' => '192.168.1.1:9160, 1192.168.1.2:9160', 
+    'kairosdb.datastore.cassandra.host_list' => '192.168.1.1:9160, 192.168.1.2:9160', 
   }
 }
 ```
@@ -38,14 +38,14 @@ As mentioned above, the module supports multiple KairosDB instances at the same 
 ```
 kairosdb::instance { 'kdb01': 
   properties_set => {
-    'kairosdb.datastore.cassandra.host_list' => '192.168.1.1:9160, 1192.168.1.2:9160', 
+    'kairosdb.datastore.cassandra.host_list' => '192.168.1.1:9160, 192.168.1.2:9160', 
   }
 }
 kairosdb::instance { 'kdb02': 
   telnetserver_port => 4243, 
   jetty_port        => 8081, 
   properties_set => {
-    'kairosdb.datastore.cassandra.host_list' => '192.168.1.1:9160, 1192.168.1.2:9160', 
+    'kairosdb.datastore.cassandra.host_list' => '192.168.1.1:9160, 192.168.1.2:9160', 
   }
 }
 ```
@@ -74,14 +74,14 @@ class { 'kairosdb':
 }
 kairosdb::instance { 'kdb01': 
   properties_set => {
-    'kairosdb.datastore.cassandra.host_list' => '192.168.1.1:9160, 1192.168.1.2:9160', 
+    'kairosdb.datastore.cassandra.host_list' => '192.168.1.1:9160, 192.168.1.2:9160', 
   }
 }
 kairosdb::instance { 'kdb02': 
   telnetserver_port => 4243, 
   jetty_port        => 8081, 
   properties_set => {
-    'kairosdb.datastore.cassandra.host_list' => '192.168.1.1:9160, 1192.168.1.2:9160', 
+    'kairosdb.datastore.cassandra.host_list' => '192.168.1.1:9160, 192.168.1.2:9160', 
   }
 }
 ```
