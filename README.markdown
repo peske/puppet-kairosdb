@@ -17,6 +17,8 @@ It is true that one KairosDB module already can be found at [puppet forge](https
 
 Don't get me wrong - [jmkeyes/kairosdb](https://forge.puppet.com/jmkeyes/kairosdb) module is great, and obviously both mentioned _cons_ are not caused by the module, but by KairosDB itself. Anyway I really wanted to have these issues resolved, so I've created this module which besides pure installation also _patches_ few things.
 
+**NOTE:** I'm not 100% sure, but I believe that running multiple KairosDB instances on the same host is not officially supported by KairosDB. Nevertheless I'm using such implementation in my (production) environment without problems so far.
+
 ## Minimum Configuration
 
 Minimum configuration example is based on assumption that we'll use Cassandra cluster as datastore, with two Cassandra nodes: 192.168.1.1:9160 and 192.168.1.2:9160. If so we can configure one KairosDB instance as follows:
