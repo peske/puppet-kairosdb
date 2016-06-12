@@ -1,4 +1,4 @@
-# kairosdb #
+# kairosdb Puppet Module #
 
 The module installs [KairosDB](http://kairosdb.github.io/) and allows configuring and managing multiple KairosDB instances on the same Ubuntu host.
 
@@ -19,7 +19,7 @@ Don't get me wrong - [jmkeyes/kairosdb](https://forge.puppet.com/jmkeyes/kairosd
 
 ## Minimum Configuration
 
-Minimum configuration example is based on assumption that we'll use Cassandra cluster for backend storage, with two Cassandra nodes: 192.168.1.1:9160 and 192.168.1.2:9160. If so we can configure one KairosDB instance as follows:
+Minimum configuration example is based on assumption that we'll use Cassandra cluster as datastore, with two Cassandra nodes: 192.168.1.1:9160 and 192.168.1.2:9160. If so we can configure one KairosDB instance as follows:
 
 ```
 kairosdb::instance { 'kdb01': 
@@ -52,12 +52,12 @@ kairosdb::instance { 'kdb02':
 
 **Note** that while configuring the second instance we have to specify different ports at least.
 
-You've might noticed that the previous example is not too usefull since both instances are running on the same host, and both are targeting the same backend storage (database). It's true. But the beauty of the module is in the fact that it allows us completely independent configuration of the instances, so we can accomplish what ever we want. Let's enumerate some of possibilities:
+You've might noticed that the previous example is not too useful since both instances are running on the same host, and both are targeting the same datastore (database). It's true. But the beauty of the module is in the fact that it allows us completely independent configuration of the instances, so we can accomplish what ever we want. Let's enumerate some of possibilities:
 
 * The instances can target the same Cassandra cluster, or different clusters;
 * The instances can target the same keyspace in the Cassandra cluster, or different keyspaces;
-* If the instances are targetting different keyspace we can differently configure these keyspaces. For example one (less important) keystore can be created with replication_factor 1, while another (more important) with replication_factor=3.
-* The instances do not have to target the same datastorage type, meaning that one instance can target Cassandra, while another targets H2.
+* If the instances are targeting different keyspace we can differently configure these keyspaces. For example one (less important) keypace can be created with replication_factor 1, while another (more important) with replication_factor=3.
+* The instances do not have to target the same datastore type, meaning that one instance can target Cassandra, while another targets H2.
 * etc.
 
 Obviously any combination is possible, and you can read more at [Puppet and KairosDB - kairosdb Module](https://www.itenlight.com/blog/2016/06/12/Puppet+and+KairosDB+-+kairosdb+Module).
