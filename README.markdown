@@ -1,6 +1,6 @@
 # kairosdb Puppet Module #
 
-The module installs [KairosDB](http://kairosdb.github.io/) and allows configuring and managing multiple KairosDB instances on the same Ubuntu host.
+The module installs [KairosDB](http://kairosdb.github.io/) and allows configuring and managing multiple KairosDB instances on the same host.
 
 The module is simple to implement and use, and complete (still short) documentation can be found at [Puppet and KairosDB - kairosdb Module](https://www.itenlight.com/blog/2016/06/12/Puppet+and+KairosDB+-+kairosdb+Module).
 
@@ -12,12 +12,16 @@ If you already have KairosDB up and running, **you should not implement this mod
 
 It is true that one KairosDB module already can be found at [puppet forge](https://forge.puppet.com/jmkeyes/kairosdb), but there are few things that I couldn't accomplish using it:
 
-* Although the mentioned module correctly installs KairosDB, due to [an issue in KairosDB itself](https://github.com/kairosdb/kairosdb/issues/239) the module is not able to manage KairosDB service on Ubuntu. This module implements simple patch (`patch_initd`) that resolves the problem.
+* Although the mentioned module correctly installs KairosDB, due to [an issue in KairosDB itself](https://github.com/kairosdb/kairosdb/issues/239) the module is not able to manage KairosDB service on Debian and Ubuntu. This module implements simple patch (`patch_initd`) that resolves the problem.
 * Default KairosDB installation (implemented by the mentioned module) does not allow running multiple KairosDB instances on the same host, and this is exactly what I wanted to do.
 
 Don't get me wrong - [jmkeyes/kairosdb](https://forge.puppet.com/jmkeyes/kairosdb) module is great, and obviously both mentioned _cons_ are not caused by the module, but by KairosDB itself. Anyway I really wanted to have these issues resolved, so I've created this module which besides pure installation also _patches_ few things.
 
 **NOTE:** I'm not 100% sure, but I believe that running multiple KairosDB instances on the same host is not officially supported by KairosDB. Nevertheless I'm using such implementation in my (production) environment without problems so far.
+
+## Prerequisites
+
+Java installed, and JAVA_HOME set.
 
 ## Minimum Configuration
 
@@ -103,6 +107,13 @@ Guys, it's my fourth module at puppet forge, almost 2000 downloads in total so f
 This module is published under Apache 2.0 license, but depending on `use_highcarts` parameter value it might include [Highcart script](http://www.highcharts.com/), which is a **commercial** product, and you should check [their licensing options](http://shop.highcharts.com/highcharts/). They offer free license for non-commercial usage.
 
 ## Release History
+
+### v0.2.0
+
+**Date:** Jun 13. 2016
+
+**Release Info:**
+* RedHat family support added.
 
 ### v0.1.1
 

@@ -91,30 +91,15 @@ define kairosdb::instance(
 
     'absent': {
 
-      exec { "service kairosdb-${name} stop":
-        path   => ['/sbin', '/bin', '/usr/sbin', '/usr/bin',
-                    '/usr/local/sbin', '/usr/local/bin'],
-        onlyif => "service kairosdb-${name} status",
-        before => File["kairosdb-${name} directory"],
-      }
-      ->
-      exec { "service kairosdb-${name} install":
-        command => "update-rc.d -f kairosdb-${name} remove",
-        path    => ['/sbin', '/bin', '/usr/sbin', '/usr/bin',
-                    '/usr/local/sbin', '/usr/local/bin'],
-        onlyif  => "test -d ${::kairosdb::conf_base}/${name}",
-        before  => File["kairosdb-${name} directory"],
-      }
-      
-      file { "service script kairosdb-${name} install":
-        ensure => 'absent',
-        path   => "/etc/init.d/kairosdb-${name}",
+      kairosdb::serviceinstaller { "kairosdb-${name}": 
+        ensure => 'absent', 
       }
       
       file { "kairosdb-${name} directory":
-        ensure => 'absent',
-        path   => "${::kairosdb::conf_base}/${name}",
-        force  => true,
+        ensure  => 'absent',
+        path    => "${::kairosdb::conf_base}/${name}",
+        force   => true,
+        require => Kairosdb::Serviceinstaller["kairosdb-${name}"], 
       }
 
     }
@@ -125,33 +110,21 @@ define kairosdb::instance(
         command => "cp -r ${::kairosdb::conf_base}/template ${::kairosdb::conf_base}/${name} && sed -i 's/<instance_name>/${name}/g' ${::kairosdb::conf_base}/${name}/bin/*",
         path    => ['/sbin', '/bin', '/usr/sbin', '/usr/bin',
                     '/usr/local/sbin', '/usr/local/bin'],
-        creates => "${::kairosdb::conf_base}/${name}/bin/kairosdb.sh",
-        notify  => Exec["service kairosdb-${name} install"],
+        creates => "${::kairosdb::conf_base}/${name}/bin/kairosdb.sh", 
+      }
+
+      kairosdb::serviceinstaller { "kairosdb-${name}": 
+        ensure     => 'present', 
+        scriptfile => "${::kairosdb::conf_base}/${name}/bin/kairosdb-service.sh", 
+        require    => Exec["kairosdb-${name} directory"], 
       }
       ->
-      file { "service script kairosdb-${name} install":
-        ensure => 'file',
-        path   => "/etc/init.d/kairosdb-${name}",
-        source => "file://${::kairosdb::conf_base}/${name}/bin/kairosdb-service.sh",
-        mode   => '0755',
-        before => Exec["service kairosdb-${name} install"],
-        notify => Exec["service kairosdb-${name} install"],
-      }
-      
-      exec { "service kairosdb-${name} install":
-        command     => "update-rc.d kairosdb-${name} defaults",
-        path        => ['/sbin', '/bin', '/usr/sbin', '/usr/bin',
-                    '/usr/local/sbin', '/usr/local/bin'],
-        refreshonly => true,
-      }
-      
       kairosdb::configure { $name:
         datastore         => $datastore,
         jetty_port        => $jetty_port,
         telnetserver_port => $telnetserver_port,
         properties_set    => $properties_set,
         properties_remove => $properties_remove,
-        require           => File["service script kairosdb-${name} install"],
       }
 
       if $manage_service {

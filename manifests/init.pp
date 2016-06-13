@@ -49,6 +49,8 @@
 #   (https://github.com/kairosdb/kairosdb/issues/239)
 #   If this parameter is set to true than the script will
 #   be fixed, and will work as expected. 
+#   IMPORTANT: Used only on Debian / Ubuntu OS. Ignored on
+#              RedHat / CentOS.
 #   Default:   true
 #
 # [*init_functions*]
@@ -161,27 +163,19 @@ class kairosdb (
     
   }
 
-  exec { 'stop preinstalled kairosdb service':
-    command => 'service kairosdb stop',
-    path    => ['/sbin', '/bin', '/usr/sbin', '/usr/bin',
-                '/usr/local/sbin', '/usr/local/bin'],
-    onlyif  => 'service kairosdb status'
+  kairosdb::serviceinstaller { 'kairosdb':
+    ensure => 'absent', 
   }
-  ->
+  
   file { "${::kairosdb::tmpdir}/kairos_cache":
     ensure  => 'absent',
     force   => true,
-    require => File[$conf_base],
+    require => Kairosdb::Serviceinstaller['kairosdb'],
   }
 
   file { "${conf_base}/template":
     ensure  => 'directory',
     require => File["${::kairosdb::tmpdir}/kairos_cache"],
-  }
-
-  file { '/etc/init.d/kairosdb':
-    ensure  => absent,
-    require => File["${conf_base}/template"],
   }
 
   exec { 'kairosdb_config_template_bin':
@@ -240,25 +234,29 @@ class kairosdb (
     require => File["${conf_base}/template"],
   }
 
-  if $patch_initd {
+  if $::osfamily == 'Debian' {
 
-    file_line { 'kairosdb-service-PATCH_INITD':
-      line    => "        . ${init_functions} ; pidofproc -p /var/run/kairosdb-<instance_name>.pid java >/dev/null ; status=\$? ; if [ \$status -eq 0 ]; then log_success_msg \"kairosdb-<instance_name> is running.\" ; else log_failure_msg \"kairosdb-<instance_name> is not running.\" ; fi ; exit \$status",
-      path    => "${conf_base}/template/bin/kairosdb-service.sh",
-      match   => '^\s*status\s+kairosdb\s*$',
-      after   => Exec['kairosdb_config_template_bin'],
-      require => File["${conf_base}/template"],
+    if $patch_initd {
+
+      file_line { 'kairosdb-service-PATCH_INITD':
+        line    => "        . ${init_functions} ; pidofproc -p /var/run/kairosdb-<instance_name>.pid java >/dev/null ; status=\$? ; if [ \$status -eq 0 ]; then log_success_msg \"kairosdb-<instance_name> is running.\" ; else log_failure_msg \"kairosdb-<instance_name> is not running.\" ; fi ; exit \$status",
+        path    => "${conf_base}/template/bin/kairosdb-service.sh",
+        match   => '^\s*status\s+kairosdb\s*$',
+        after   => Exec['kairosdb_config_template_bin'],
+        require => File["${conf_base}/template"],
+      }
+
     }
+    else {
 
-  }
-  else {
+      file_line { 'kairosdb-service-PATCH_INITD':
+        line    => '        status kairosdb',
+        path    => "${conf_base}/template/bin/kairosdb-service.sh",
+        match   => '^.*(?:(status\s+kairosdb\s*)|(.*pidofproc\s+-p\s.+))$',
+        after   => Exec['kairosdb_config_template_bin'],
+        require => File["${conf_base}/template"],
+      }
 
-    file_line { 'kairosdb-service-PATCH_INITD':
-      line    => '        status kairosdb',
-      path    => "${conf_base}/template/bin/kairosdb-service.sh",
-      match   => '^.*(?:(status\s+kairosdb\s*)|(.*pidofproc\s+-p\s.+))$',
-      after   => Exec['kairosdb_config_template_bin'],
-      require => File["${conf_base}/template"],
     }
 
   }
