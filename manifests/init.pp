@@ -1,6 +1,6 @@
 # == Class: kairosdb::instance
 #
-#  Installs and prepares KairosDB. 
+#  Installs and prepares KairosDB.
 #
 # === Parameters
 #
@@ -26,7 +26,7 @@
 # [*install_dir*]
 #   KairosDB installation directory.
 #   IMPORTANT: The value will not change package default
-#              installation directory. Instead it only 
+#              installation directory. Instead it only
 #              informs kairosdb class where to look for
 #              installed files.
 #   Default:   '/opt/kairosdb'
@@ -48,21 +48,21 @@
 #   It is known issue with KairosDB service script:
 #   (https://github.com/kairosdb/kairosdb/issues/239)
 #   If this parameter is set to true than the script will
-#   be fixed, and will work as expected. 
+#   be fixed, and will work as expected.
 #   IMPORTANT: Used only on Debian / Ubuntu OS. Ignored on
 #              RedHat / CentOS.
 #   Default:   true
 #
 # [*init_functions*]
 #   Absolute location of init-functions file. This
-#   parameter is used only if patch_initd is set to true. 
+#   parameter is used only if patch_initd is set to true.
 #   Default:   '/lib/lsb/init-functions'
 #
 # [*use_highcharts*]
 #   Whether Highcharts should be installed or not.
 #   IMPORTANT: Higcharts is a commercial product and
 #              an appropriate license is needed for its
-#              usage. 
+#              usage.
 #   Default:   false
 #
 # [*highcharts_acknowledge*]
@@ -106,11 +106,11 @@ class kairosdb (
   validate_bool($use_highcharts)
 
   if $manage_package {
-    
+
     include '::staging'
 
     validate_re($version, '^(\d+\.\d+\.\d+)(?:-\d+)?$')
-    
+
     $release = regsubst($version, '^([^-]+).*$', '\1')
 
     case $::osfamily {
@@ -153,20 +153,20 @@ class kairosdb (
       ensure  => 'directory',
       require => Package[$package_name],
     }
-    
+
   }
   else {
 
     file { $conf_base:
       ensure => 'directory',
     }
-    
+
   }
 
   kairosdb::serviceinstaller { 'kairosdb':
-    ensure => 'absent', 
+    ensure => 'absent',
   }
-  
+
   file { "${::kairosdb::tmpdir}/kairos_cache":
     ensure  => 'absent',
     force   => true,
@@ -279,7 +279,7 @@ class kairosdb (
   if $use_highcharts {
 
     if $highcharts_acknowledge != 'I am aware that highcharts.js is a commercial product, and that an appropriate license is needed for its usage.' {
-      
+
       notify {'highcharts.js is a commercial product, and an appropriate license is needed for its usage.':
         loglevel => 'warning',
       }
@@ -290,7 +290,7 @@ class kairosdb (
       source  => 'http://code.highcharts.com/highcharts.js',
       require => File["${conf_base}/template"],
     }
-    
+
     file { "${install_dir}/webroot/js/highcharts.js":
       ensure  => 'file',
       source  => "${::staging::path}/kairosdb/highcharts.js",

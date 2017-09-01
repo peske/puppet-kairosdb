@@ -1,6 +1,6 @@
 # Private type. You shouldn't use it directly.
 define kairosdb::serviceinstaller ($ensure, $scriptfile = undef) {
-  
+
   case $ensure {
 
     'present': {
@@ -16,7 +16,7 @@ define kairosdb::serviceinstaller ($ensure, $scriptfile = undef) {
         'Debian': {
 
           $servicecommand = "update-rc.d ${name} defaults"
-          
+
         }
 
         default: {
@@ -25,20 +25,20 @@ define kairosdb::serviceinstaller ($ensure, $scriptfile = undef) {
 
       }
 
-      file { "/etc/init.d/${name}": 
-        ensure => 'file', 
-        source => "file://${scriptfile}", 
-        mode   => '0755', 
-        notify => Exec["${name} service installer"], 
+      file { "/etc/init.d/${name}":
+        ensure => 'file',
+        source => "file://${scriptfile}",
+        mode   => '0755',
+        notify => Exec["${name} service installer"],
       }
 
       exec { "${name} service installer":
-        command     => $servicecommand, 
+        command     => $servicecommand,
         path        => ['/sbin', '/bin', '/usr/sbin', '/usr/bin',
-                    '/usr/local/sbin', '/usr/local/bin'], 
-        refreshonly => true, 
+                    '/usr/local/sbin', '/usr/local/bin'],
+        refreshonly => true,
       }
-      
+
     }
 
     'absent': {
@@ -54,7 +54,7 @@ define kairosdb::serviceinstaller ($ensure, $scriptfile = undef) {
           'Debian': {
 
             $servicecommand = "update-rc.d -f ${name} remove"
-            
+
           }
 
           default: {
@@ -63,21 +63,21 @@ define kairosdb::serviceinstaller ($ensure, $scriptfile = undef) {
 
       }
 
-      exec { "service ${name} stop": 
+      exec { "service ${name} stop":
         path   => ['/sbin', '/bin', '/usr/sbin', '/usr/bin',
-                    '/usr/local/sbin', '/usr/local/bin'], 
-        onlyif => "service ${name} status", 
+                    '/usr/local/sbin', '/usr/local/bin'],
+        onlyif => "service ${name} status",
       }
       ->
       exec { "${name} service installer":
-        command => $servicecommand, 
+        command => $servicecommand,
         path    => ['/sbin', '/bin', '/usr/sbin', '/usr/bin',
-                    '/usr/local/sbin', '/usr/local/bin'], 
-        onlyif  => "test -f /etc/init.d/${name}", 
+                    '/usr/local/sbin', '/usr/local/bin'],
+        onlyif  => "test -f /etc/init.d/${name}",
       }
       ->
-      file { "/etc/init.d/${name}": 
-        ensure => 'absent', 
+      file { "/etc/init.d/${name}":
+        ensure => 'absent',
       }
 
     }

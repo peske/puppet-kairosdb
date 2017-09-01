@@ -1,6 +1,6 @@
 # == Class: kairosdb::instance
 #
-#  Creates and configures (or removes) KairosDB instance. 
+#  Creates and configures (or removes) KairosDB instance.
 #
 # === Parameters
 #
@@ -91,15 +91,15 @@ define kairosdb::instance(
 
     'absent': {
 
-      kairosdb::serviceinstaller { "kairosdb-${name}": 
-        ensure => 'absent', 
+      kairosdb::serviceinstaller { "kairosdb-${name}":
+        ensure => 'absent',
       }
-      
+
       file { "kairosdb-${name} directory":
         ensure  => 'absent',
         path    => "${::kairosdb::conf_base}/${name}",
         force   => true,
-        require => Kairosdb::Serviceinstaller["kairosdb-${name}"], 
+        require => Kairosdb::Serviceinstaller["kairosdb-${name}"],
       }
 
     }
@@ -110,13 +110,13 @@ define kairosdb::instance(
         command => "cp -r ${::kairosdb::conf_base}/template ${::kairosdb::conf_base}/${name} && sed -i 's/<instance_name>/${name}/g' ${::kairosdb::conf_base}/${name}/bin/*",
         path    => ['/sbin', '/bin', '/usr/sbin', '/usr/bin',
                     '/usr/local/sbin', '/usr/local/bin'],
-        creates => "${::kairosdb::conf_base}/${name}/bin/kairosdb.sh", 
+        creates => "${::kairosdb::conf_base}/${name}/bin/kairosdb.sh",
       }
 
-      kairosdb::serviceinstaller { "kairosdb-${name}": 
-        ensure     => 'present', 
-        scriptfile => "${::kairosdb::conf_base}/${name}/bin/kairosdb-service.sh", 
-        require    => Exec["kairosdb-${name} directory"], 
+      kairosdb::serviceinstaller { "kairosdb-${name}":
+        ensure     => 'present',
+        scriptfile => "${::kairosdb::conf_base}/${name}/bin/kairosdb-service.sh",
+        require    => Exec["kairosdb-${name} directory"],
       }
       ->
       kairosdb::configure { $name:

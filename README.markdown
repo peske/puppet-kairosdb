@@ -108,6 +108,13 @@ This module is published under Apache 2.0 license, but depending on `use_highcar
 
 ## Release History
 
+### v0.2.1
+
+**Date:** September 1. 2017
+
+**Release Info:**
+* Code cosmetics (thnks to puppet-lint).
+
 ### v0.2.0
 
 **Date:** Jun 13. 2016

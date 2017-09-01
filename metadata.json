@@ -1,6 +1,6 @@
 {
   "name": "fatdragon-kairosdb",
-  "version": "0.2.0", 
+  "version": "0.2.1", 
   "author": "Fat Dragon", 
   "license": "Apache-2.0",
   "summary": "Installs KairosDB and allows confugirung and running MULTIPLE KairosDB instances on the same host.",
